@@ -48,7 +48,7 @@ const Blog = () => {
 
       <div className="relative z-10 pt-10 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* ── Header ── */}
+          {/* Header */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
               <BookOpen className="w-5 h-5 text-indigo-400" />
@@ -68,7 +68,7 @@ const Blog = () => {
             </p>
           </div>
 
-          {/* ── Blog Grid ── */}
+          {/* Blog Grid */}
           {/* Empty State */}
           {blogs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 border border-white/[0.05] rounded-3xl bg-white/[0.03] backdrop-blur-xl">

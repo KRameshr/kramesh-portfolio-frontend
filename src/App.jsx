@@ -8,26 +8,27 @@ import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import Contact from "./pages/Contact";
 import Resume from "./pages/Resume";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // Admin pages
+
 import Login from "./admin/Login";
 import Dashboard from "./admin/Dashboard";
+import ManageAbout from "./admin/ManageAbout";
 import ManageProjects from "./admin/ManageProjects";
 import ManageSkills from "./admin/ManageSkills";
 import ManageBlogs from "./admin/ManageBlogs";
-import ManageAbout from "./admin/ManageAbout";
-
-// Components
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ScrollToTop from "./components/ScrollToTop";
+import ManageCertifications from "./admin/ManageCertifications";
+import ManageEducation from "./admin/ManageEducation";
+import ManageExperience from "./admin/ManageExperience";
+import ManageMessages from "./admin/ManageMessages";
 
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
       <Routes>
-        {/* Public routes */}
+        {/* Public */}
         <Route
           path="/"
           element={
@@ -98,14 +99,21 @@ function App() {
             </>
           }
         />
+        {/* admin routs */}
 
-        {/* Admin routes */}
         <Route path="/admin" element={<Login />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/about" element={<ManageAbout />} />
         <Route path="/admin/projects" element={<ManageProjects />} />
         <Route path="/admin/skills" element={<ManageSkills />} />
         <Route path="/admin/blogs" element={<ManageBlogs />} />
-        <Route path="/admin/about" element={<ManageAbout />} />
+        <Route
+          path="/admin/certifications"
+          element={<ManageCertifications />}
+        />
+        <Route path="/admin/education" element={<ManageEducation />} />
+        <Route path="/admin/experience" element={<ManageExperience />} />
+        <Route path="/admin/messages" element={<ManageMessages />} />
       </Routes>
     </BrowserRouter>
   );

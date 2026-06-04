@@ -24,11 +24,23 @@ const Contact = () => {
     setError("");
 
     try {
-      await API.post("/contact", form);
+      // 1. Fire the request
+      const response = await API.post("/contact", form);
+      console.log(" Server Response:", response.data);
+
       setSuccess(true);
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      setError("Failed to send message. Please try again.");
+      // 2. Log the exact failure object to your browser console window
+      console.error(" Full Frontend Error Object:", err);
+      console.error(" Response Server Error Context:", err.response?.data);
+
+      // 3. Render the precise backend reason to the user screen if available
+      const backendErrorMessage =
+        err.response?.data?.message || err.response?.data?.error;
+      setError(
+        backendErrorMessage || "Failed to send message. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
