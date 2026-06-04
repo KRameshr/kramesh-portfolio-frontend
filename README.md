@@ -148,7 +148,7 @@ Deployed on **Vercel**
 - Auto-deploy on GitHub push
 - Environment variable `VITE_API_URL` set in Vercel dashboard
 
-- ## Backed git
+- ## Backend git
   https://github.com/KRameshr/kramesh-portfolio-backend
 
 ## 👨‍💻 Author
