@@ -72,11 +72,11 @@ frontend/src/
 ```
 ## 📊 System Architecture
 
-### Backend Flow Diagram
+### Fronted Flow Diagram
 ![Backend Flow Architecture](fronted.snap.png)
 
-### Database Schema Map
-![Database Snapchart](db,snapchart.png)
+### view UI
+![Database Snapchart](Frontend.snap.png)
 ## 🚀 Getting Started
 
 
