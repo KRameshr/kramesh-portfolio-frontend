@@ -70,8 +70,15 @@ frontend/src/
 ├── App.jsx                    # Routes configuration
 └── main.jsx                   # Entry point
 ```
+## 📊 System Architecture
 
+### Backend Flow Diagram
+![Backend Flow Architecture](fronted.snap.png)
+
+### Database Schema Map
+![Database Snapchart](db,snapchart.png)
 ## 🚀 Getting Started
+
 
 ### 1. Clone the repo
 ```bash
