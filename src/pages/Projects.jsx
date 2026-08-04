@@ -63,7 +63,7 @@ const Projects = () => {
 
       <div className="relative z-10 pt-12 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* ── Header ── */}
+          {/* Header */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
               <Terminal className="w-5 h-5 text-indigo-400" />
@@ -82,7 +82,7 @@ const Projects = () => {
             </p>
           </div>
 
-          {/* ── Projects Grid ── */}
+          {/* Projects Grid */}
           {projects.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3">
               <Terminal className="w-8 h-8 text-slate-700" />

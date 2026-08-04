@@ -45,7 +45,7 @@ const Skills = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 font-sans">
-      {/* ── Background ── */}
+      {/* Background */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
@@ -63,7 +63,7 @@ const Skills = () => {
 
       <div className="relative z-10 pt-8 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          {/* ── Header ── */}
+          {/*  Header */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
               <Braces className="w-5 h-5 text-indigo-400" />
@@ -82,7 +82,7 @@ const Skills = () => {
             </p>
           </div>
 
-          {/* ── Skills by Category ── */}
+          {/* Skills by Category  */}
           <div className="flex flex-col gap-10">
             {Object.entries(grouped).map(([category, items]) => (
               <div key={category}>
@@ -111,7 +111,6 @@ const Skills = () => {
                         </span>
                       </div>
 
-                      {/* Name */}
                       <span className="text-sm font-black uppercase tracking-[0.08em] text-slate-300 text-center group-hover:text-white transition-colors">
                         {skill.name}
                       </span>

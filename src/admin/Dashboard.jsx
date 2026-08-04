@@ -13,7 +13,6 @@ import {
 import AdminLayout from "../components/admin/AdminLayout";
 import API from "../api/axios";
 
-// Color dictionary mapping to safe Tailwind CSS classes
 const colorClasses = {
   indigo: {
     bg: "bg-indigo-600/10",

@@ -147,7 +147,7 @@ const BlogDetail = () => {
           {/* Content Bottom Divider */}
           <div className="h-[1px] bg-white/[0.05] mt-12 mb-8" />
 
-          {/* ── MOBILE FALLBACK NAVIGATION (Only shows on mobile screens instead of fixed edges) ── */}
+          {/* MOBILE FALLBACK NAVIGATION (Only shows on mobile screens instead of fixed edges) ── */}
           <div className="grid grid-cols-2 gap-4 md:hidden mb-8">
             {prevBlog ? (
               <Link

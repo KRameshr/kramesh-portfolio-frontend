@@ -24,18 +24,13 @@ const Contact = () => {
     setError("");
 
     try {
-      // 1. Fire the request
       const response = await API.post("/contact", form);
       console.log(" Server Response:", response.data);
-
       setSuccess(true);
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      // 2. Log the exact failure object to your browser console window
       console.error(" Full Frontend Error Object:", err);
       console.error(" Response Server Error Context:", err.response?.data);
-
-      // 3. Render the precise backend reason to the user screen if available
       const backendErrorMessage =
         err.response?.data?.message || err.response?.data?.error;
       setError(
@@ -87,7 +82,7 @@ const Contact = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* ── Left — Contact Info Cards ── */}
+            {/* Left — Contact Info Cards  */}
             <div className="flex flex-col gap-4">
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-2">
@@ -155,7 +150,7 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* ── Right — Contact Form + Map Block ── */}
+            {/* Right — Contact Form + Map Block  */}
             <div className="lg:col-span-2">
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-center">
                 {success ? (

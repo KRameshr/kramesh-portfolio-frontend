@@ -62,7 +62,7 @@ const Resume = () => {
 
       <div className="relative z-10 pt-8 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          {/* ── Header ── */}
+          {/*  Header  */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-3">
@@ -79,7 +79,7 @@ const Resume = () => {
               </h1>
             </div>
 
-            {/* ── Only TWO buttons ── */}
+            {/*  Only TWO buttons  */}
             {fileId && (
               <div className="flex gap-3">
                 <a
@@ -104,7 +104,7 @@ const Resume = () => {
             )}
           </div>
 
-          {/* ── PDF Preview ── */}
+          {/* PDF Preview */}
           {previewUrl ? (
             <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
               {/* Top bar — mac style */}
@@ -138,7 +138,7 @@ const Resume = () => {
             </div>
           )}
 
-          {/* ── Bottom bar — mobile friendly ── */}
+          {/* Bottom bar — mobile friendly */}
           {fileId && (
             <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.02] border border-white/[0.05] rounded-2xl px-5 py-4">
               <p className="text-xs text-slate-500 text-center sm:text-left">
