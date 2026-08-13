@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!--  Favicon -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+
+    <!-- Web app manifest (PWA / mobile home screen support) -->
+    <link rel="manifest" href="/site.webmanifest" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Kuruba Ramesh — Full Stack Developer</title>
+    <title>Kuruba Ramesh - Full Stack Developer</title>
 
     <meta
       name="description"
-      content="Kuruba Ramesh — Full Stack Developer specializing in Java, Spring Boot, React.js and Python. Building scalable backend systems and responsive user interfaces."
+      content="Kuruba Ramesh - Full Stack Developer specializing in Java, Spring Boot, React.js and Python. Building scalable backend systems and responsive user interfaces."
     />
     <meta
       name="keywords"
@@ -21,23 +24,34 @@
     <meta name="author" content="Kuruba Ramesh" />
     <meta name="robots" content="index, follow" />
 
-    <meta property="og:title" content="Kuruba Ramesh — Full Stack Developer" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Kuruba Ramesh - Full Stack Developer" />
     <meta
       property="og:description"
       content="Building scalable backend systems and responsive user interfaces with Java, Spring Boot and React.js."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-portfolio.vercel.app" />
+    <!-- TODO: replace with your actual deployed domain -->
+    <meta property="og:url" content="https://krameshdev.vercel.app" />
+    <!-- TODO: add a 1200x630 preview image to /public and update this path -->
+    <meta
+      property="og:image"
+      content="https://krameshdev.vercel.app/og-preview.png"
+    />
 
-    <!-- ✅ Twitter Card -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Kuruba Ramesh — Full Stack Developer" />
+    <meta name="twitter:title" content="Kuruba Ramesh - Full Stack Developer" />
     <meta
       name="twitter:description"
       content="Building scalable backend systems and responsive user interfaces with Java, Spring Boot and React.js."
     />
+    <meta
+      name="twitter:image"
+      content="https://krameshdev.vercel.app/og-preview.png"
+    />
 
-    <!-- ✅ Google Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -45,8 +59,8 @@
       rel="stylesheet"
     />
 
-    <!-- ✅ Theme color (mobile browser bar) -->
-    <meta name="theme-color" content="#0f172a" />
+    <!-- Theme color (mobile browser bar) — matches site's blue brand color -->
+    <meta name="theme-color" content="#2563eb" />
   </head>
   <body>
     <div id="root"></div>

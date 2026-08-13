@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Trash2, Plus, ExternalLink, Pencil } from "lucide-react";
 import toast from "react-hot-toast";
 import AdminLayout from "../components/admin/AdminLayout";
@@ -20,6 +20,7 @@ const ManageProjects = () => {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchProjects = async () => {
     try {
@@ -34,28 +35,49 @@ const ManageProjects = () => {
     fetchProjects();
   }, []);
 
+  const resetFormState = () => {
+    setForm(empty);
+    setImage(null);
+    setEditId(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const formData = new FormData();
-      Object.entries(form).forEach(([k, v]) => formData.append(k, v));
-      if (image) formData.append("image", image);
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("tech_stack", form.tech_stack);
+      formData.append("live_url", form.live_url || "");
+      formData.append("github_url", form.github_url || "");
+      formData.append("is_featured", String(form.is_featured));
+
+      if (image) {
+        formData.append("image", image);
+      }
 
       if (editId) {
-        await API.put(`/projects/${editId}`, formData);
+        await API.put(`/projects/${editId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Project updated!");
       } else {
-        await API.post("/projects", formData);
+        await API.post("/projects", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Project created!");
       }
-      setForm(empty);
-      setImage(null);
-      setEditId(null);
+
+      resetFormState();
       setShowForm(false);
       fetchProjects();
     } catch (err) {
-      toast.error("Something went wrong!");
+      toast.error(err.response?.data?.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -65,14 +87,15 @@ const ManageProjects = () => {
     setForm({
       title: project.title,
       description: project.description,
-      tech_stack: project.tech_stack,
+      tech_stack: Array.isArray(project.tech_stack)
+        ? project.tech_stack.join(", ")
+        : project.tech_stack || "",
       live_url: project.live_url || "",
       github_url: project.github_url || "",
-      is_featured: project.is_featured,
+      is_featured: project.is_featured || false,
     });
     setEditId(project._id);
     setShowForm(true);
-    // Smooth scroll up to the entry form layout on mobile viewports
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -90,18 +113,18 @@ const ManageProjects = () => {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto w-full">
-        {/* Header (Stack elements cleanly on small phones) */}
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <h1 className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide">
             Projects
           </h1>
           <button
+            type="button"
             onClick={() => {
-              setShowForm(!showForm);
-              setForm(empty);
-              setEditId(null);
+              resetFormState();
+              setShowForm((prev) => !prev);
             }}
-            className="flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-50 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer border-none w-max shadow-lg shadow-indigo-600/10"
+            className="flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer border-none w-max shadow-lg shadow-indigo-600/10"
           >
             <Plus className="w-6 h-7 sm:w-6 sm:h-6" /> Add Project
           </button>
@@ -195,6 +218,7 @@ const ManageProjects = () => {
                   Project Image
                 </label>
                 <input
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   onChange={(e) => setImage(e.target.files[0])}
@@ -231,9 +255,8 @@ const ManageProjects = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    resetFormState();
                     setShowForm(false);
-                    setEditId(null);
-                    setForm(empty);
                   }}
                   className="flex-1 sm:flex-none bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 px-6 py-3 sm:py-2.5 rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer border border-white/[0.07]"
                 >
@@ -244,7 +267,7 @@ const ManageProjects = () => {
           </div>
         )}
 
-        {/* Projects List Container */}
+        {/* Projects List */}
         <div className="flex flex-col gap-3">
           {projects.map((project) => (
             <div
@@ -267,12 +290,14 @@ const ManageProjects = () => {
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {project.tech_stack
-                    ?.split(",")
+                  {(Array.isArray(project.tech_stack)
+                    ? project.tech_stack
+                    : project.tech_stack?.split(",") || []
+                  )
                     .slice(0, 4)
-                    .map((t) => (
+                    .map((t, idx) => (
                       <span
-                        key={t}
+                        key={`${t}-${idx}`}
                         className="text-[9px] font-black uppercase bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full"
                       >
                         {t.trim()}
@@ -281,7 +306,6 @@ const ManageProjects = () => {
                 </div>
               </div>
 
-              {/* Action Buttons Row (Fills full width on mobile viewports) */}
               <div className="flex items-center justify-end gap-2 border-t border-white/[0.04] sm:border-none pt-3 sm:pt-0 w-full sm:w-auto flex-shrink-0">
                 {project.live_url && (
                   <a
@@ -294,12 +318,14 @@ const ManageProjects = () => {
                   </a>
                 )}
                 <button
+                  type="button"
                   onClick={() => handleEdit(project)}
                   className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-slate-400 hover:text-indigo-400 transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleDelete(project._id)}
                   className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors cursor-pointer"
                 >

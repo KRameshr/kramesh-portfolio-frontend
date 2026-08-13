@@ -37,14 +37,25 @@ const ManageAbout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([k, v]) => formData.append(k, v));
-      if (image) formData.append("image", image);
-      await API.put("/about", formData);
+      if (image) {
+        // ఇమేజ్ ఉన్నప్పుడు మాత్రమే FormData వాడటం
+        const formData = new FormData();
+        Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+        formData.append("image", image);
+
+        await API.put("/about", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        // ఇమేజ్ లేనప్పుడు నేరుగా JSON ఫార్మాట్‌లో పంపడం
+        await API.put("/about", form);
+      }
+
       toast.success("About updated!");
     } catch (err) {
-      toast.error("Something went wrong!");
+      toast.error(err.response?.data?.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -75,8 +86,10 @@ const ManageAbout = () => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  setImage(e.target.files[0]);
-                  setPreview(URL.createObjectURL(e.target.files[0]));
+                  if (e.target.files[0]) {
+                    setImage(e.target.files[0]);
+                    setPreview(URL.createObjectURL(e.target.files[0]));
+                  }
                 }}
                 className="text-sm text-slate-400"
               />

@@ -1,0 +1,3 @@
+Contact: mailto:krameshr348@gmail.com
+Preferred-Languages: en
+Canonical: https://krameshdev.vercel.app/.well-known/security.txt

@@ -40,12 +40,19 @@ const ManageExperience = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // display_order ని String నుండి Number కి మార్చడం
+    const payload = {
+      ...form,
+      display_order: Number(form.display_order) || 0,
+    };
+
     try {
       if (editId) {
-        await API.put(`/experience/${editId}`, form);
+        await API.put(`/experience/${editId}`, payload);
         toast.success("Experience updated!");
       } else {
-        await API.post("/experience", form);
+        await API.post("/experience", payload);
         toast.success("Experience added!");
       }
       setForm(empty);
@@ -102,7 +109,7 @@ const ManageExperience = () => {
               setForm(empty);
               setEditId(null);
             }}
-            className="flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-50 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer border-none w-max shadow-lg shadow-indigo-600/10"
+            className="flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer border-none w-max shadow-lg shadow-indigo-600/10"
           >
             <Plus className="w-5 h-7 sm:w-5 sm:h-7" /> Add
           </button>
@@ -150,6 +157,7 @@ const ManageExperience = () => {
                       {label}
                     </label>
                     <input
+                      type={key === "display_order" ? "number" : "text"}
                       value={form[key]}
                       onChange={(e) =>
                         setForm({ ...form, [key]: e.target.value })
@@ -281,5 +289,4 @@ const ManageExperience = () => {
     </AdminLayout>
   );
 };
-
 export default ManageExperience;

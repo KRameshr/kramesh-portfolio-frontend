@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Braces } from "lucide-react";
+import { Braces, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import FadeInSection from "./FadeInSection";
 import API from "../../api/axios";
@@ -16,15 +16,35 @@ const TechStack = () => {
 
   return (
     <FadeInSection>
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-transparent text-gray-900">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-4 mb-10">
-            <Braces className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-400 whitespace-nowrap">
-              Tech Stack
-            </h2>
-            <div className="flex-1 h-[1px] bg-white/[0.05]" />
+          {/* Section Header with "View All" on the Right */}
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-4">
+              <Braces className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-600 whitespace-nowrap">
+                Tech Stack
+              </h2>
+            </div>
+
+            {/* View All Button with Hover & Tap Size/Color Animation */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link
+                to="/skills"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-orange-500 border border-blue-600 hover:border-orange-500 rounded-full px-4 py-3 transition-all duration-300 shadow-md shadow-blue-500/20 hover:shadow-orange-500/20 no-underline whitespace-nowrap"
+              >
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-white flex items-center gap-1.5">
+                  View All <ArrowRight className="w-3 h-3" />
+                </span>
+              </Link>
+            </motion.div>
           </div>
+
+          {/* Skills Grid */}
           <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start">
             {skills.map((skill, i) => (
               <motion.div
@@ -32,22 +52,16 @@ const TechStack = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.07] hover:border-indigo-500/30 hover:bg-indigo-600/10 rounded-full px-3 sm:px-4 py-2 transition-all duration-200 cursor-default"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group flex items-center gap-2 bg-blue-50/60 border border-blue-200/80 hover:bg-orange-50 hover:border-orange-300 rounded-full px-4 py-2 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-slate-300">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:bg-orange-500 transition-colors duration-300 flex-shrink-0" />
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-blue-900 group-hover:text-orange-600 transition-colors duration-300">
                   {skill.name}
                 </span>
               </motion.div>
             ))}
-            <Link
-              to="/skills"
-              className="flex items-center gap-2 border border-dashed border-white/[0.1] hover:border-indigo-500/30 rounded-full px-3 sm:px-4 py-2 transition-all duration-200 no-underline"
-            >
-              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-slate-500 hover:text-indigo-400">
-                View All
-              </span>
-            </Link>
           </div>
         </div>
       </section>

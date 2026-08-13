@@ -13,21 +13,13 @@ const CTA = lazy(() => import("../components/home/CTA"));
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 font-sans">
-      {/* Background  */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `url(/src/assets/hero-bg2.jpg)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.9,
-        }}
-      />
-      <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-br from-[#020617]/95 via-[#020617]/85 to-[#030712]/90" />
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-white text-gray-900 font-sans relative overflow-x-hidden">
+      {/* Decorative gradient blobs — fixed behind all sections, subtle depth using brand colors */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-20 -left-20 w-[30rem] h-[30rem] bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -right-16 w-[26rem] h-[26rem] bg-orange-400/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-indigo-400/15 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-[28rem] h-[28rem] bg-blue-400/15 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10">

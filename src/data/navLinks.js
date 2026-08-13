@@ -4,7 +4,6 @@ const navLinks = [
   { name: "Skills", path: "/skills" },
   { name: "Blog", path: "/blog" },
   { name: "Resume", path: "/resume" },
-  { name: "Contact", path: "/contact" },
 ];
 
 export default navLinks;

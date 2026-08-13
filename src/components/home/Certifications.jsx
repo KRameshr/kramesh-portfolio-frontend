@@ -28,189 +28,206 @@ const Certifications = () => {
   const currentCert = certifications[currentIndex];
 
   const variants = {
-    enter: (dir) => ({ opacity: 0, x: dir > 0 ? 60 : -60 }),
+    enter: (dir) => ({ opacity: 0, x: dir > 0 ? 30 : -30 }),
     center: { opacity: 1, x: 0 },
-    exit: (dir) => ({ opacity: 0, x: dir > 0 ? -60 : 60 }),
+    exit: (dir) => ({ opacity: 0, x: dir > 0 ? -30 : 30 }),
   };
 
   if (certifications.length === 0) return null;
 
   return (
     <FadeInSection>
-      <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-wrap items-center gap-3 mb-8 sm:mb-12">
-            <Award className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-400">
-              Certification
+      <section className="min-h-[80vh] sm:min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-16 relative overflow-hidden bg-transparent text-gray-900">
+        <div className="max-w-6xl w-full mx-auto relative z-10">
+          {/* Section Header */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
+            <div className="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-600">
+              <Award className="w-4 h-4" />
+            </div>
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-blue-600">
+              Certifications
             </h2>
-            <div className="flex-1 h-[1px] bg-white/[0.05]" />
+            <div className="flex-1 h-[1px] bg-gray-200" />
             {certifications.length > 1 && (
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
                 {currentIndex + 1} / {certifications.length}
               </span>
             )}
           </div>
 
-          {/* Carousel */}
-          {/* Carousel */}
-          <div className="relative">
-            {/* Desktop Navigation */}
+          {/* MAIN CONTAINER CARD */}
+          <div className="relative bg-slate-100/70 border border-gray-200/90 rounded-[1.75rem] sm:rounded-[2.5rem] p-4 sm:p-10 shadow-xl shadow-gray-200/50">
+            {/* Desktop Navigation Arrows */}
             {certifications.length > 1 && (
               <>
                 <button
                   onClick={prevCert}
-                  className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.07] items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/30 transition-all duration-200"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={nextCert}
-                  className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.07] items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/30 transition-all duration-200"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </>
-            )}
-
-            <div className="sm:px-14">
-              <AnimatePresence custom={direction} mode="wait">
-                <motion.div
-                  key={currentIndex}
-                  custom={direction}
-                  variants={variants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-12 items-center bg-white/[0.03] border border-white/[0.03] rounded-2xl sm:rounded-3xl p-4 sm:p-8"
-                >
-                  {/* Image */}
-                  <div className="lg:col-span-5 relative group">
-                    <div className="absolute inset-0 bg-indigo-600/10 rounded-2xl blur-2xl scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0b0f19] shadow-2xl hover:border-indigo-500/30 transition-all duration-300">
-                      {currentCert?.image_url ? (
-                        <img
-                          src={currentCert.image_url}
-                          alt={currentCert.certificate_name}
-                          className="w-full max-h-[220px] sm:max-h-[350px] object-contain block mx-auto group-hover:scale-[1.02] transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-48 flex items-center justify-center">
-                          <Award className="w-12 h-12 text-indigo-500/30" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-6">
-                    <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 sm:p-8 flex flex-col justify-between">
-                      <div>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-indigo-400 break-words">
-                            {currentCert?.institution_name}
-                          </p>
-
-                          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full w-fit">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[9px] font-black uppercase tracking-[0.1em] text-emerald-400">
-                              Verified · {currentCert?.end_date}
-                            </span>
-                          </div>
-                        </div>
-
-                        <h3 className="text-white font-black uppercase text-lg sm:text-xl lg:text-2xl tracking-tight break-words mb-2">
-                          {currentCert?.certificate_name}
-                        </h3>
-
-                        {currentCert?.start_date && (
-                          <p className="text-indigo-300/80 font-bold text-xs sm:text-sm uppercase tracking-wider mb-4">
-                            {currentCert.start_date} –{" "}
-                            {currentCert.end_date || "Present"}
-                          </p>
-                        )}
-
-                        {currentCert?.description && (
-                          <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                            {currentCert.description}
-                          </p>
-                        )}
-
-                        {currentCert?.certificate_id && (
-                          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 break-all">
-                            ID: {currentCert.certificate_id}
-                          </p>
-                        )}
-                      </div>
-
-                      {currentCert?.credential_url && (
-                        <div className="pt-4 border-t border-white/[0.05] mt-4">
-                          <a
-                            href={currentCert.credential_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-2 w-full sm:w-fit bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-200 no-underline shadow-[0_0_20px_rgba(99,102,241,0.25)]"
-                          >
-                            View Credentials
-                            <ArrowRight className="w-5 h-5" />
-                          </a>
-                        </div>
-                      )}
-                    </div>
-
-                    {currentCert?.skills && (
-                      <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 sm:p-6">
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="h-1 w-3 bg-indigo-500 rounded-full" />
-                          <h4 className="text-slate-300 font-black uppercase text-[10px] tracking-[0.2em]">
-                            Core Expertise
-                          </h4>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          {currentCert.skills.split(",").map((skill, index) => (
-                            <span
-                              key={index}
-                              className="max-w-full break-words text-[10px] font-bold tracking-wide text-slate-300 bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-1.5 hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all duration-150"
-                            >
-                              {skill.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Mobile Navigation */}
-            {certifications.length > 1 && (
-              <div className="flex sm:hidden justify-center gap-4 mt-5">
-                <button
-                  onClick={prevCert}
-                  className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center"
+                  aria-label="Previous Certificate"
+                  className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white border border-gray-200 items-center justify-center text-gray-700 hover:text-white hover:bg-orange-500 hover:border-orange-500 transition-all duration-300 shadow-lg cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
 
                 <button
                   onClick={nextCert}
-                  className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center"
+                  aria-label="Next Certificate"
+                  className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white border border-gray-200 items-center justify-center text-gray-700 hover:text-white hover:bg-orange-500 hover:border-orange-500 transition-all duration-300 shadow-lg cursor-pointer"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
+
+            {/* Carousel Content */}
+            <AnimatePresence custom={direction} mode="wait">
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center"
+              >
+                {/* Left: Certificate Image (Increased Height & Size) */}
+                <div className="lg:col-span-6 relative group flex justify-center">
+                  <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 bg-slate-900 shadow-md">
+                    {currentCert?.image_url ? (
+                      <div className="overflow-hidden p-2 flex items-center justify-center">
+                        <img
+                          src={currentCert.image_url}
+                          alt={currentCert.certificate_name}
+                          className="w-full max-h-[360px] sm:max-h-[460px] object-contain block mx-auto rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-80 flex items-center justify-center">
+                        <Award className="w-12 h-12 text-blue-500/30" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Certificate Info (Two Separate Cards Layout restored) */}
+                <div className="lg:col-span-6 flex flex-col justify-between gap-6">
+                  {/* Top Info Card */}
+                  <div className="bg-white border border-gray-200/80 rounded-2xl p-4 sm:p-7 flex flex-col justify-between">
+                    <div>
+                      {/* Institution & Verified Tag */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">
+                          {currentCert?.institution_name}
+                        </span>
+
+                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[9px] font-black uppercase tracking-[0.1em] text-emerald-700">
+                            Verified{" "}
+                            {currentCert?.end_date
+                              ? `· ${currentCert.end_date}`
+                              : ""}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Certificate Name */}
+                      <h3 className="text-gray-900 font-black uppercase text-lg sm:text-2xl tracking-tight mb-2">
+                        {currentCert?.certificate_name}
+                      </h3>
+
+                      {/* Dates */}
+                      {currentCert?.start_date && (
+                        <p className="text-gray-500 font-bold text-xs uppercase tracking-wider mb-3">
+                          {currentCert.start_date} –{" "}
+                          {currentCert.end_date || "Present"}
+                        </p>
+                      )}
+
+                      {/* Description */}
+                      {currentCert?.description && (
+                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4">
+                          {currentCert.description}
+                        </p>
+                      )}
+
+                      {/* Certificate ID */}
+                      {currentCert?.certificate_id && (
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                          ID:{" "}
+                          <span className="text-gray-700 font-mono">
+                            {currentCert.certificate_id}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* View Credentials Button (Blue normal, Orange on Hover) */}
+                    {currentCert?.credential_url && (
+                      <div className="pt-5 sm:pt-8 border-t border-gray-200 mt-4 sm:mt-5">
+                        <motion.a
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          href={currentCert.credential_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 w-full sm:w-fit bg-blue-600 hover:bg-orange-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 no-underline shadow-md shadow-blue-600/20 hover:shadow-orange-500/20 cursor-pointer"
+                        >
+                          View Credentials
+                          <ArrowRight className="w-3 h-3" />
+                        </motion.a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bottom Core Expertise Card */}
+                  {currentCert?.skills && (
+                    <div className="bg-white border border-gray-200/80 rounded-2xl p-4 sm:p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-1.5 w-3 bg-blue-600 rounded-full" />
+                        <h4 className="text-gray-800 font-black uppercase text-[10px] tracking-[0.2em]">
+                          Core Expertise
+                        </h4>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                        {currentCert.skills.split(",").map((skill, index) => (
+                          <span
+                            key={index}
+                            className="text-[9px] sm:text-[10px] font-bold tracking-wide text-blue-600 bg-blue-50/60 border border-blue-200 rounded-lg sm:rounded-xl px-3 py-1.5 sm:px-5 sm:py-3 hover:bg-orange-500 hover:text-white transition-all duration-200"
+                          >
+                            {skill.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Mobile Navigation Buttons */}
+            {certifications.length > 1 && (
+              <div className="flex sm:hidden justify-center gap-4 mt-6">
+                <button
+                  onClick={prevCert}
+                  className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextCert}
+                  className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-orange-500 hover:text-white transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             )}
           </div>
 
-          {/* Dots */}
+          {/* Dots Pagination */}
           {certifications.length > 1 && (
-            <div className="flex justify-center gap-2 mt-6">
+            <div className="flex justify-center items-center gap-2 mt-6">
               {certifications.map((_, i) => (
                 <button
                   key={i}
@@ -218,7 +235,12 @@ const Certifications = () => {
                     setDirection(i > currentIndex ? 1 : -1);
                     setCurrentIndex(i);
                   }}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === currentIndex ? "bg-indigo-400 w-6" : "bg-white/[0.15] w-2"}`}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === currentIndex
+                      ? "bg-blue-600 w-8"
+                      : "bg-gray-300 hover:bg-gray-400 w-2"
+                  }`}
                 />
               ))}
             </div>

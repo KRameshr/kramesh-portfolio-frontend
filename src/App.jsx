@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 // Public pages
 import Home from "./pages/Home";
@@ -10,6 +11,7 @@ import Contact from "./pages/Contact";
 import Resume from "./pages/Resume";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Admin pages
 
@@ -27,6 +29,10 @@ import ManageMessages from "./admin/ManageMessages";
 function App() {
   return (
     <BrowserRouter>
+      {/* Resets scroll position to top on every route change */}
+      <ScrollToTop />
+      {/* Renders toast notifications (used by Projects, Contact, etc.) */}
+      <Toaster position="top-center" />
       <Routes>
         {/* Public */}
         <Route
