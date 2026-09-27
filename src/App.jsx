@@ -9,6 +9,8 @@ import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import Contact from "./pages/Contact";
 import Resume from "./pages/Resume";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import DataDeletion from "./pages/DataDeletion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -105,6 +107,11 @@ function App() {
             </>
           }
         />
+        {/* Meta-required pages */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        <Route path="/data-deletion" element={<DataDeletion />} />
+
         {/* admin routs */}
 
         <Route path="/admin" element={<Login />} />
