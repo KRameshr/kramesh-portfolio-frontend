@@ -11,12 +11,13 @@ import Contact from "./pages/Contact";
 import Resume from "./pages/Resume";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataDeletion from "./pages/DataDeletion";
+import TermsOfService from "./pages/TermsOfService";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 
 // Admin pages
-
 import Login from "./admin/Login";
 import Dashboard from "./admin/Dashboard";
 import ManageAbout from "./admin/ManageAbout";
@@ -33,8 +34,10 @@ function App() {
     <BrowserRouter>
       {/* Resets scroll position to top on every route change */}
       <ScrollToTop />
-      {/* Renders toast notifications (used by Projects, Contact, etc.) */}
+
+      {/* Renders toast notifications */}
       <Toaster position="top-center" />
+
       <Routes>
         {/* Public */}
         <Route
@@ -47,6 +50,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/projects"
           element={
@@ -57,6 +61,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/skills"
           element={
@@ -67,6 +72,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/blog"
           element={
@@ -77,6 +83,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/blog/:slug"
           element={
@@ -87,6 +94,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/contact"
           element={
@@ -97,6 +105,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/resume"
           element={
@@ -107,13 +116,15 @@ function App() {
             </>
           }
         />
+
         {/* Meta-required pages */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         <Route path="/data-deletion" element={<DataDeletion />} />
 
-        {/* admin routs */}
+        <Route path="/terms-of-service" element={<TermsOfService />} />
 
+        {/* Admin routes */}
         <Route path="/admin" element={<Login />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/about" element={<ManageAbout />} />
