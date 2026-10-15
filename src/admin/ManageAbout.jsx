@@ -45,17 +45,19 @@ const ManageAbout = () => {
         Object.entries(form).forEach(([k, v]) => formData.append(k, v));
         formData.append("image", image);
 
-        await API.put("/about", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await API.put("/about", formData);
       } else {
         // ఇమేజ్ లేనప్పుడు నేరుగా JSON ఫార్మాట్‌లో పంపడం
-        await API.put("/about", form);
+        await API.put("/about", form, {
+          headers: { "Content-Type": "application/json" },
+        });
       }
 
       toast.success("About updated!");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong!");
+      toast.error(
+        err.response?.data?.message || err.message || "Unable to save About profile.",
+      );
     } finally {
       setLoading(false);
     }
