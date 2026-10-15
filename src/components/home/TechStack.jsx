@@ -4,25 +4,29 @@ import { Braces, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import FadeInSection from "./FadeInSection";
 import API from "../../api/axios";
+import { getUniqueSkills } from "../../utils/skills";
 
 const TechStack = () => {
   const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     API.get("/skills")
-      .then((res) => setSkills(res.data.slice(0, 8)))
-      .catch(console.error);
+      .then((res) => setSkills(getUniqueSkills(res.data).slice(0, 8)))
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <FadeInSection>
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-transparent text-gray-900">
+      <section className="portfolio-section portfolio-section-light px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Section Header with "View All" on the Right */}
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex flex-wrap items-center justify-between gap-y-4 mb-10">
             <div className="flex items-center gap-4">
               <Braces className="w-5 h-5 text-blue-600 flex-shrink-0" />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-600 whitespace-nowrap">
+              <h2 className="portfolio-section-heading text-xl sm:text-3xl font-bold tracking-tight text-gray-950 whitespace-nowrap">
                 Tech Stack
               </h2>
             </div>
@@ -35,9 +39,9 @@ const TechStack = () => {
             >
               <Link
                 to="/skills"
-                className="flex items-center gap-2 bg-blue-600 hover:bg-orange-500 border border-blue-600 hover:border-orange-500 rounded-full px-4 py-3 transition-all duration-300 shadow-md shadow-blue-500/20 hover:shadow-orange-500/20 no-underline whitespace-nowrap"
+                className="portfolio-button-primary flex items-center gap-2 px-4 py-2.5 transition-colors no-underline whitespace-nowrap"
               >
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-white flex items-center gap-1.5">
+                <span className="text-sm font-medium text-white flex items-center gap-1.5">
                   View All <ArrowRight className="w-3 h-3" />
                 </span>
               </Link>
@@ -46,18 +50,22 @@ const TechStack = () => {
 
           {/* Skills Grid */}
           <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start">
-            {skills.map((skill, i) => (
+            {loading ? (
+              <p role="status" className="text-sm text-gray-500">Loading skills…</p>
+            ) : loadError ? (
+              <p role="alert" className="text-sm text-red-800">Skills could not be loaded.</p>
+            ) : skills.length === 0 ? (
+              <p className="text-sm text-gray-600">No skills are available.</p>
+            ) : skills.map((skill, i) => (
               <motion.div
                 key={skill._id}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="group flex items-center gap-2 bg-blue-50/60 border border-blue-200/80 hover:bg-orange-50 hover:border-orange-300 rounded-full px-4 py-2 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+                className="group flex items-center gap-2 bg-white border border-gray-200 hover:border-orange-300 rounded-lg px-4 py-2.5 transition-colors cursor-default shadow-sm"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:bg-orange-500 transition-colors duration-300 flex-shrink-0" />
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-blue-900 group-hover:text-orange-600 transition-colors duration-300">
+                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0" />
+                <span className="text-sm font-semibold text-gray-800">
                   {skill.name}
                 </span>
               </motion.div>

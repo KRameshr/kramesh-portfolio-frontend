@@ -8,6 +8,7 @@ const FeaturedProjects = lazy(
 const Certifications = lazy(() => import("../components/home/Certifications"));
 const Education = lazy(() => import("../components/home/Education"));
 const Experience = lazy(() => import("../components/home/Experience"));
+const BlogPreview = lazy(() => import("../components/home/BlogPreview"));
 const CTA = lazy(() => import("../components/home/CTA"));
 
 const SectionSkeleton = () => (
@@ -18,15 +19,8 @@ const SectionSkeleton = () => (
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans relative overflow-x-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-[30rem] h-[30rem] bg-blue-500/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/4 -right-16 w-[26rem] h-[26rem] bg-orange-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-indigo-400/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-[28rem] h-[28rem] bg-blue-400/15 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10">
+    <main className="public-page min-h-screen bg-white text-gray-900 overflow-x-hidden">
+      <div>
         {/* Instant Hero Render */}
         <Hero />
 
@@ -51,10 +45,14 @@ const Home = () => {
         </Suspense>
 
         <Suspense fallback={<SectionSkeleton />}>
+          <BlogPreview />
+        </Suspense>
+
+        <Suspense fallback={<SectionSkeleton />}>
           <CTA />
         </Suspense>
       </div>
-    </div>
+    </main>
   );
 };
 

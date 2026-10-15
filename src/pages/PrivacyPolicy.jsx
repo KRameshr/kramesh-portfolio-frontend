@@ -1,6 +1,6 @@
 const DataDeletion = () => {
   return (
-    <main className="min-h-screen bg-white px-6 py-12 text-gray-800">
+    <main className="public-page min-h-screen bg-white px-6 py-12 text-gray-800">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-4 text-4xl font-bold">User Data Deletion</h1>
 

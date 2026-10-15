@@ -20,21 +20,37 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+
+    const submission = Object.fromEntries(
+      Object.entries(form).map(([key, value]) => [key, value.trim()]),
+    );
+    if (!submission.name || !submission.email || !submission.message) {
+      setError("Please complete your name, email, and message.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const response = await API.post("/contact", form);
-      console.log(" Server Response:", response.data);
+      const response = await API.post("/contact", submission);
+      if (response.status !== 201) {
+        throw new Error("Contact request was not accepted");
+      }
       setSuccess(true);
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      console.error(" Full Frontend Error Object:", err);
-      console.error(" Response Server Error Context:", err.response?.data);
-      const backendErrorMessage =
-        err.response?.data?.message || err.response?.data?.error;
+      const status = err.response?.status;
+      const serverMessage = err.response?.data?.message;
       setError(
-        backendErrorMessage || "Failed to send message. Please try again.",
+        status === 400 || status === 429 || status === 503
+          ? serverMessage || "Please check your details and try again."
+          : "We couldn't send your message right now. Please try again later or use the email link.",
       );
     } finally {
       setLoading(false);
@@ -45,14 +61,8 @@ const Contact = () => {
     "bg-white border border-gray-200 focus:border-blue-500 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors duration-200 shadow-sm";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50/60 via-white to-slate-50/90 text-gray-900 font-sans relative overflow-x-hidden">
-      {/* Decorative gradient blobs — bottom-left and top-right, distinct from other pages */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute -bottom-24 -left-24 w-[28rem] h-[28rem] bg-orange-400/[0.11] rounded-full blur-3xl" />
-        <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-500/[0.10] rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 pt-20 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+    <main className="public-page min-h-screen bg-white text-gray-900">
+      <div className="pt-14 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -66,8 +76,8 @@ const Contact = () => {
               Get In Touch
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase text-gray-900 mb-4">
-            Contact <span className="text-blue-600">Me</span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-gray-950 mb-4">
+            Contact
           </h1>
           <p className="text-gray-600 text-sm max-w-xl">
             Have a project in mind or want to collaborate? Feel free to reach
@@ -83,7 +93,7 @@ const Contact = () => {
             transition={{ delay: 0.15, duration: 0.5 }}
             className="flex flex-col gap-4"
           >
-            <div className="bg-slate-100/70 border border-gray-200/90 hover:border-orange-300 rounded-2xl p-6 transition-colors duration-300 shadow-sm">
+            <div className="bg-white border border-gray-200 hover:border-blue-300 rounded-xl p-5 transition-colors">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Mail className="w-4 h-4 text-blue-600" />
@@ -100,7 +110,7 @@ const Contact = () => {
               </a>
             </div>
 
-            <div className="bg-slate-100/70 border border-gray-200/90 hover:border-orange-300 rounded-2xl p-6 transition-colors duration-300 shadow-sm">
+            <div className="bg-white border border-gray-200 hover:border-blue-300 rounded-xl p-5 transition-colors">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Phone className="w-4 h-4 text-blue-600" />
@@ -117,7 +127,7 @@ const Contact = () => {
               </a>
             </div>
 
-            <div className="bg-slate-100/70 border border-gray-200/90 hover:border-orange-300 rounded-2xl p-6 transition-colors duration-300 shadow-sm">
+            <div className="bg-white border border-gray-200 hover:border-blue-300 rounded-xl p-5 transition-colors">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <MapPin className="w-4 h-4 text-blue-600" />
@@ -156,11 +166,13 @@ const Contact = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="lg:col-span-2"
           >
-            <div className="bg-slate-100/70 border border-gray-200/90 rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-center shadow-sm">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 sm:p-8 h-full flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 {success ? (
                   <motion.div
                     key="success"
+                    role="status"
+                    aria-live="polite"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
@@ -170,16 +182,16 @@ const Contact = () => {
                       <CheckCircle className="w-8 h-8 text-emerald-500" />
                     </div>
                     <h3 className="text-gray-900 font-black uppercase text-lg tracking-tight">
-                      Message Sent!
+                      Message Accepted
                     </h3>
                     <p className="text-gray-500 text-sm text-center">
-                      Thanks for reaching out. I'll get back to you soon!
+                      Your message was accepted for delivery. Thanks for reaching out!
                     </p>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setSuccess(false)}
-                      className="flex items-center gap-2 bg-blue-600 hover:bg-orange-500 text-white px-5 py-3 rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-colors duration-300 cursor-pointer border-none shadow-md shadow-blue-600/20 hover:shadow-orange-500/20"
+                      className="flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-5 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer border-none"
                     >
                       Send Another
                     </motion.button>
@@ -196,29 +208,33 @@ const Contact = () => {
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                        <label htmlFor="contact-name" className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
                           Name *
                         </label>
                         <input
                           type="text"
+                          id="contact-name"
                           name="name"
                           value={form.name}
                           onChange={handleChange}
                           required
+                          maxLength={120}
                           placeholder="Your name"
                           className={inputClasses}
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                        <label htmlFor="contact-email" className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
                           Email *
                         </label>
                         <input
                           type="email"
+                          id="contact-email"
                           name="email"
                           value={form.email}
                           onChange={handleChange}
                           required
+                          maxLength={254}
                           placeholder="your@email.com"
                           className={inputClasses}
                         />
@@ -227,14 +243,16 @@ const Contact = () => {
 
                     {/* Subject */}
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                      <label htmlFor="contact-subject" className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
                         Subject
                       </label>
                       <input
                         type="text"
+                        id="contact-subject"
                         name="subject"
                         value={form.subject}
                         onChange={handleChange}
+                        maxLength={200}
                         placeholder="What is this about?"
                         className={inputClasses}
                       />
@@ -242,14 +260,16 @@ const Contact = () => {
 
                     {/* Message */}
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                      <label htmlFor="contact-message" className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
                         Message *
                       </label>
                       <textarea
+                        id="contact-message"
                         name="message"
                         value={form.message}
                         onChange={handleChange}
                         required
+                        maxLength={10000}
                         rows={6}
                         placeholder="Tell me about your project..."
                         className={`${inputClasses} resize-none`}
@@ -263,7 +283,7 @@ const Contact = () => {
                         whileTap={{ scale: 0.95 }}
                         type="submit"
                         disabled={loading}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-orange-500 text-white px-6 py-3.5 rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-colors duration-300 no-underline shadow-md shadow-blue-600/20 hover:shadow-orange-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-5 py-3 rounded-lg text-sm font-medium transition-colors no-underline disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {loading ? (
                           <>
@@ -298,7 +318,7 @@ const Contact = () => {
 
                     {/* Error Handling */}
                     {error && (
-                      <p className="text-[11px] font-black uppercase tracking-[0.1em] text-red-500 m-0">
+                      <p role="alert" className="text-sm text-red-700 m-0">
                         {error}
                       </p>
                     )}
@@ -309,7 +329,7 @@ const Contact = () => {
           </motion.div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

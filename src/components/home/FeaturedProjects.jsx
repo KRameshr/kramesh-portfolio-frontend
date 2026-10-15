@@ -2,44 +2,31 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Terminal, ArrowRight, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
 import FadeInSection from "./FadeInSection";
 import API from "../../api/axios";
+import { getExternalUrl } from "../../utils/links";
 
 const FeaturedProjects = () => {
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     API.get("/projects")
       .then((res) => setProjects(res.data.slice(0, 3)))
-      .catch(console.error);
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
   }, []);
-
-  const handleLiveClick = (url) => {
-    if (!url || url === "null") {
-      toast.error("This project is not live yet!", {
-        style: {
-          background: "#1e293b",
-          color: "#f1f5f9",
-          border: "1px solid rgba(255,255,255,0.1)",
-          fontSize: "12px",
-          fontWeight: "bold",
-        },
-      });
-      return;
-    }
-    window.open(url, "_blank");
-  };
 
   return (
     <FadeInSection>
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-transparent text-gray-900">
+      <section className="portfolio-section portfolio-section-dark px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex flex-wrap items-center justify-between gap-y-4 mb-10">
             <div className="flex items-center gap-3">
               <Terminal className="w-5 h-5 text-blue-600 flex-shrink-0" />
-              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-600">
+              <h2 className="portfolio-section-heading text-xl sm:text-3xl font-bold tracking-tight text-white">
                 Featured Projects
               </h2>
             </div>
@@ -52,9 +39,9 @@ const FeaturedProjects = () => {
             >
               <Link
                 to="/projects"
-                className="flex items-center gap-2 bg-blue-600 hover:bg-orange-500 border border-blue-600 hover:border-orange-500 rounded-full px-4 py-2 transition-all duration-300 shadow-md shadow-blue-500/20 hover:shadow-orange-500/20 no-underline whitespace-nowrap"
+                className="portfolio-button-primary portfolio-projects-cta flex items-center gap-2 px-4 py-2.5 transition-colors no-underline whitespace-nowrap"
               >
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.08em] text-white flex items-center gap-1.5">
+                <span className="text-sm font-medium text-white flex items-center gap-1.5">
                   All <ArrowRight className="w-3 h-3" />
                 </span>
               </Link>
@@ -63,13 +50,21 @@ const FeaturedProjects = () => {
 
           {/* Projects Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project, i) => (
+            {loading ? (
+              <p role="status" className="sm:col-span-2 lg:col-span-3 text-sm text-gray-500">Loading projects…</p>
+            ) : loadError ? (
+              <p role="alert" className="sm:col-span-2 lg:col-span-3 text-sm text-red-800 bg-red-50 border border-red-200 rounded-xl p-4">
+                Featured projects could not be loaded.
+              </p>
+            ) : projects.length === 0 ? (
+              <p className="sm:col-span-2 lg:col-span-3 text-sm text-gray-600">No featured projects are available.</p>
+            ) : projects.map((project, i) => (
               <motion.div
                 key={project._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.15 }}
-                className="group bg-slate-100/70 border border-gray-200/90 hover:border-orange-300 rounded-3xl p-6 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 flex flex-col justify-between"
+                className="portfolio-card group p-5 sm:p-6 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Header: Number & Links */}
@@ -83,7 +78,8 @@ const FeaturedProjects = () => {
                           href={project.github_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-blue-600 hover:text-white hover:bg-orange-500 hover:border-orange-500 transition-all duration-300 shadow-sm"
+                          aria-label={`View ${project.title} source code on GitHub (opens in a new tab)`}
+                          className="portfolio-projects-cta w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -100,12 +96,17 @@ const FeaturedProjects = () => {
                           </svg>
                         </a>
                       )}
-                      <button
-                        onClick={() => handleLiveClick(project.live_url)}
-                        className="w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-blue-600 hover:text-white hover:bg-orange-500 hover:border-orange-500 transition-all duration-300 shadow-sm cursor-pointer"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </button>
+                      {getExternalUrl(project.live_url) && (
+                        <a
+                          href={getExternalUrl(project.live_url)}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Visit ${project.title} live site (opens in a new tab)`}
+                          className="portfolio-projects-cta w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
                     </div>
                   </div>
 
@@ -142,7 +143,7 @@ const FeaturedProjects = () => {
                       return (
                         <span
                           key={trimmedTech}
-                          className="text-[9px] font-black uppercase tracking-[0.08em] bg-white border border-gray-200 text-blue-700 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-colors px-2.5 py-1 rounded-full cursor-default shadow-xs"
+                          className="text-xs font-medium bg-blue-50 border border-blue-100 text-blue-800 px-2.5 py-1 rounded-full cursor-default"
                         >
                           {trimmedTech}
                         </span>

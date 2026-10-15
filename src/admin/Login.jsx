@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Lock, Mail, Eye, EyeOff, Braces } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Braces, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import API from "../api/axios";
-import heroBg from "../assets/hero-bg4.jpg";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -11,138 +10,136 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (loading) return;
+
+    const email = form.email.trim();
+    if (!email || !form.password) {
+      setError("Enter your email and password to continue.");
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
-      const res = await API.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
+      const response = await API.post("/auth/login", {
+        email,
+        password: form.password,
+      });
+      if (!response.data?.token) {
+        setError("Sign in could not be completed. Please try again.");
+        return;
+      }
+      localStorage.setItem("token", response.data.token);
       navigate("/admin/dashboard");
-    } catch (err) {
-      setError("Invalid email or password");
+    } catch {
+      setError("We couldn't sign you in with those details. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background Graphic Textures */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `url(${heroBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          opacity: 0.2,
-        }}
-      />
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 sm:w-80 h-64 sm:h-80 bg-purple-600/10 rounded-full blur-3xl" />
-      </div>
+    <main className="admin-login min-h-screen flex items-center justify-center px-4 py-10 sm:px-6">
+      <div className="admin-login__glow" aria-hidden="true" />
+      <div className="admin-login__content w-full max-w-md">
+        <Link to="/" className="admin-login__back">
+          <ArrowLeft aria-hidden="true" size={16} />
+          Back to portfolio
+        </Link>
 
-      {/* Login Card Core Wrapper */}
-      <div className="relative z-10 w-full max-w-md my-auto">
-        <div className="flex flex-col items-center mb-6 sm:mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600/15 border border-indigo-500/25 flex items-center justify-center mb-3">
-            <Braces className="w-6 h-6 text-indigo-400" />
+        <section className="admin-login__card" aria-labelledby="admin-login-title">
+          <div className="admin-login__brand">
+            <div className="admin-login__mark" aria-hidden="true">
+              <Braces size={23} strokeWidth={2.2} />
+            </div>
+            <p className="admin-login__eyebrow">K. Ramesh · Portfolio</p>
+            <h1 id="admin-login-title">Admin sign in</h1>
+            <p className="admin-login__description">
+              Sign in to manage your portfolio content.
+            </p>
           </div>
-          <h1 className="text-2xl font-black uppercase text-white tracking-tight">
-            Admin <span className="text-indigo-400">Panel</span>
-          </h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mt-1">
-            K.Ramesh Portfolio
-          </p>
-        </div>
 
-        {/* Dynamic Interactive Card Container */}
-        <div className="bg-white/[0.03] border border-white/[0.06] backdrop-blur-md rounded-2xl p-6 sm:p-10 shadow-2xl">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Email Form Field */}
-            <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+          <form onSubmit={handleSubmit} className="admin-login__form">
+            <div className="admin-login__field">
+              <label htmlFor="admin-email">Email address</label>
+              <div className="admin-login__input-wrap">
+                <Mail size={17} aria-hidden="true" />
                 <input
+                  id="admin-email"
+                  name="email"
                   type="email"
+                  autoComplete="username"
                   value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onChange={(event) => {
+                    setForm({ ...form, email: event.target.value });
+                    setError("");
+                  }}
                   required
-                  placeholder="admin@email.com"
-                  className="w-full bg-white/[0.04] border border-white/[0.07] focus:border-indigo-500/50 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200"
+                  maxLength={254}
+                  placeholder="Enter your email"
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? "admin-login-error" : undefined}
                 />
               </div>
             </div>
 
-            {/* Password Form Field */}
-            <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+            <div className="admin-login__field">
+              <label htmlFor="admin-password">Password</label>
+              <div className="admin-login__input-wrap">
+                <LockKeyhole size={17} aria-hidden="true" />
                 <input
+                  id="admin-password"
+                  name="password"
                   type={showPass ? "text" : "password"}
+                  autoComplete="current-password"
                   value={form.password}
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
+                  onChange={(event) => {
+                    setForm({ ...form, password: event.target.value });
+                    setError("");
+                  }}
                   required
-                  placeholder="••••••••"
-                  className="w-full bg-white/[0.04] border border-white/[0.07] focus:border-indigo-500/50 rounded-xl pl-11 pr-11 py-3 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200"
+                  placeholder="Enter your password"
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? "admin-login-error" : undefined}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-0.5 rounded transition-colors cursor-pointer"
+                  className="admin-login__visibility"
+                  onClick={() => setShowPass((visible) => !visible)}
+                  aria-label={showPass ? "Hide password" : "Show password"}
+                  aria-pressed={showPass}
                 >
-                  {showPass ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
+                  {showPass ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
             </div>
 
-            {/* Error Message Box */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl py-2 px-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.1em] text-red-400 text-center">
-                  {error}
-                </p>
-              </div>
+              <p id="admin-login-error" className="admin-login__error" role="alert">
+                {error}
+              </p>
             )}
 
-            {/* Submit Security Trigger Button */}
             <button
               type="submit"
+              className="admin-login__submit"
               disabled={loading}
-              className="flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white py-4 px-6 sm:py-5 sm:px-4 rounded-full text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-200 cursor-pointer border-none shadow-[0_4px_20px_rgba(99,102,241,0.25)] mt-2 active:scale-[0.98] w-max mx-auto sm:w-full"
+              aria-busy={loading}
             >
-              {loading ? (
-                <>
-                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Logging in...</span>
-                </>
-              ) : (
-                "Login to Admin"
-              )}
+              {loading && <span className="admin-login__spinner" aria-hidden="true" />}
+              {loading ? "Signing in…" : "Sign in to admin"}
             </button>
           </form>
-        </div>
 
-        {/* Access Footer Sub-text */}
-        <p className="text-center text-[10px] font-black uppercase tracking-[0.15em] text-slate-600 mt-6">
-          Protected — Admin Only
-        </p>
+          <p className="admin-login__secure">
+            <LockKeyhole size={14} aria-hidden="true" />
+            Restricted to authorized administrators
+          </p>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 

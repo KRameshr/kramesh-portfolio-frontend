@@ -1,35 +1,20 @@
-import React from "react";
 import { motion } from "framer-motion";
 
 const Loader = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50/60 via-white to-slate-50/90 flex items-center justify-center relative overflow-hidden">
-      {/* Decorative gradient blobs — consistent with rest of site */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-blue-500/[0.08] rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-orange-400/[0.09] rounded-full blur-3xl" />
-      </div>
-
+    <div role="status" aria-live="polite" className="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
         className="relative z-10 flex flex-col items-center gap-6"
       >
-        {/* Gradient conic ring with pulsing brand mark at center */}
+        {/* Simple rotating brand ring */}
         <div className="relative w-20 h-20 flex items-center justify-center">
-          {/* Rotating gradient ring (blue -> orange), masked to a thin ring */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full"
-            style={{
-              background:
-                "conic-gradient(from 0deg, #2563eb, #f97316, transparent)",
-              WebkitMask:
-                "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
-              mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
-            }}
+            className="absolute inset-0 rounded-full border-[3px] border-gray-300 border-t-blue-600"
           />
 
           {/* Center brand mark — pulsing K. */}

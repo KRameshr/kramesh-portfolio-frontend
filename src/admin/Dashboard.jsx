@@ -1,224 +1,172 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  FolderOpen,
-  Wrench,
-  BookOpen,
+  ArrowUpRight,
   Award,
-  GraduationCap,
+  BookOpen,
   Briefcase,
+  FolderOpen,
+  GraduationCap,
   MessageSquare,
   User,
+  Wrench,
 } from "lucide-react";
 import AdminLayout from "../components/admin/AdminLayout";
 import API from "../api/axios";
 
-const colorClasses = {
-  indigo: {
-    bg: "bg-indigo-600/10",
-    border: "border-indigo-500/20",
-    hover: "hover:border-indigo-500/40",
-    text: "text-indigo-400",
-    iconBg: "bg-indigo-600/20",
-  },
-  purple: {
-    bg: "bg-purple-600/10",
-    border: "border-purple-500/20",
-    hover: "hover:border-purple-500/40",
-    text: "text-purple-400",
-    iconBg: "bg-purple-600/20",
-  },
-  blue: {
-    bg: "bg-blue-600/10",
-    border: "border-blue-500/20",
-    hover: "hover:border-blue-500/40",
-    text: "text-blue-400",
-    iconBg: "bg-blue-600/20",
-  },
-  emerald: {
-    bg: "bg-emerald-600/10",
-    border: "border-emerald-500/20",
-    hover: "hover:border-emerald-500/40",
-    text: "text-emerald-400",
-    iconBg: "bg-emerald-600/20",
-  },
-  amber: {
-    bg: "bg-amber-600/10",
-    border: "border-amber-500/20",
-    hover: "hover:border-amber-500/40",
-    text: "text-amber-400",
-    iconBg: "bg-amber-600/20",
-  },
-  rose: {
-    bg: "bg-rose-600/10",
-    border: "border-rose-500/20",
-    hover: "hover:border-rose-500/40",
-    text: "text-rose-400",
-    iconBg: "bg-rose-600/20",
-  },
-  cyan: {
-    bg: "bg-cyan-600/10",
-    border: "border-cyan-500/20",
-    hover: "hover:border-cyan-500/40",
-    text: "text-cyan-400",
-    iconBg: "bg-cyan-600/20",
-  },
-};
-
 const cards = [
-  {
-    label: "Projects",
-    icon: FolderOpen,
-    path: "/admin/projects",
-    key: "projects",
-    color: "indigo",
-  },
-  {
-    label: "Skills",
-    icon: Wrench,
-    path: "/admin/skills",
-    key: "skills",
-    color: "purple",
-  },
-  {
-    label: "Blogs",
-    icon: BookOpen,
-    path: "/admin/blogs",
-    key: "blogs",
-    color: "blue",
-  },
-  {
-    label: "Certifications",
-    icon: Award,
-    path: "/admin/certifications",
-    key: "certifications",
-    color: "emerald",
-  },
-  {
-    label: "Education",
-    icon: GraduationCap,
-    path: "/admin/education",
-    key: "education",
-    color: "amber",
-  },
-  {
-    label: "Experience",
-    icon: Briefcase,
-    path: "/admin/experience",
-    key: "experience",
-    color: "rose",
-  },
-  {
-    label: "Messages",
-    icon: MessageSquare,
-    path: "/admin/messages",
-    key: "messages",
-    color: "cyan",
-  },
+  { label: "Projects", icon: FolderOpen, path: "/admin/projects", key: "projects" },
+  { label: "Skills", icon: Wrench, path: "/admin/skills", key: "skills" },
+  { label: "Blog posts", icon: BookOpen, path: "/admin/blogs", key: "blogs" },
+  { label: "Certifications", icon: Award, path: "/admin/certifications", key: "certifications" },
+  { label: "Education", icon: GraduationCap, path: "/admin/education", key: "education" },
+  { label: "Experience", icon: Briefcase, path: "/admin/experience", key: "experience" },
+  { label: "Messages", icon: MessageSquare, path: "/admin/messages", key: "messages" },
 ];
-import heroBg from "../assets/hero-bg6.jpg";
+
+const endpoints = [
+  { key: "projects", label: "Projects", path: "/projects" },
+  { key: "skills", label: "Skills", path: "/skills" },
+  { key: "blogs", label: "Blog posts", path: "/blogs/all" },
+  { key: "certifications", label: "Certifications", path: "/certifications" },
+  { key: "education", label: "Education", path: "/education" },
+  { key: "experience", label: "Experience", path: "/experience" },
+  { key: "messages", label: "Messages", path: "/contact/messages" },
+];
+
+const getFailureMessage = (reason, path) => {
+  const status = reason?.response?.status;
+  if (status === 401 || status === 403) {
+    return "Your admin session is not authorized. Sign in again and retry.";
+  }
+  if (status === 404) return `The API route ${path} was not found.`;
+  if (!reason?.response) {
+    return "The API could not be reached. Check the server and API URL.";
+  }
+  return `The API returned HTTP ${status}.`;
+};
 
 const Dashboard = () => {
   const [counts, setCounts] = useState({});
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [requestedKeys, setRequestedKeys] = useState(() =>
+    endpoints.map(({ key }) => key),
+  );
 
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const [projects, skills, blogs, certs, edu, exp, msgs] =
-          await Promise.all([
-            API.get("/projects"),
-            API.get("/skills"),
-            API.get("/blogs/all"),
-            API.get("/certifications"),
-            API.get("/education"),
-            API.get("/experience"),
-            API.get("/admin/messages"),
-          ]);
-        setCounts({
-          projects: projects.data.length,
-          skills: skills.data.length,
-          blogs: blogs.data.length,
-          certifications: certs.data.length,
-          education: edu.data.length,
-          experience: exp.data.length,
-          messages: msgs.data.length,
-        });
-      } catch (err) {
-        console.error(err);
-      }
+    let mounted = true;
+    const requestedEndpoints = endpoints.filter(({ key }) =>
+      requestedKeys.includes(key),
+    );
+
+    const loadCounts = async () => {
+      const results = await Promise.allSettled(
+        requestedEndpoints.map(({ path }) => API.get(path)),
+      );
+      if (!mounted) return;
+
+      const nextCounts = {};
+      const nextErrors = {};
+      results.forEach((result, index) => {
+        const { key, label, path } = requestedEndpoints[index];
+        if (result.status === "fulfilled" && Array.isArray(result.value.data)) {
+          nextCounts[key] = result.value.data.length;
+        } else {
+          nextErrors[key] = {
+            label,
+            path,
+            message:
+              result.status === "fulfilled"
+                ? "The endpoint returned an unexpected response format."
+                : getFailureMessage(result.reason, path),
+          };
+        }
+      });
+
+      setCounts((current) => ({ ...current, ...nextCounts }));
+      setErrors((current) => {
+        const remaining = { ...current };
+        requestedKeys.forEach((key) => delete remaining[key]);
+        return { ...remaining, ...nextErrors };
+      });
+      setLoading(false);
     };
-    fetchCounts();
-  }, []);
+
+    loadCounts();
+    return () => {
+      mounted = false;
+    };
+  }, [requestedKeys]);
+
+  const failedKeys = Object.keys(errors);
 
   return (
     <AdminLayout>
-      <div className="max-w-5xl mx-auto w-full">
-        {/* Background Image */}
-        <div
-          className="fixed inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: `url(${heroBg})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            opacity: 0.15,
-          }}
-        />
-        <div className="mb-8 md:mb-10 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-black uppercase text-white mb-2 tracking-wide">
-            Dashboard
-          </h1>
-          <p className="text-slate-500 text-xs sm:text-sm">
-            Welcome back, Ramesh! Manage your portfolio content.
-          </p>
-        </div>
+      <div className="admin-dashboard w-full max-w-6xl mx-auto">
+        <header className="admin-page-heading mb-8 md:mb-10">
+          <p className="admin-eyebrow">Portfolio workspace</p>
+          <h1>Dashboard</h1>
+          <p>Review your content and jump to a section to make updates.</p>
+        </header>
 
-        {/* About card */}
-        <Link
-          to="/admin/about"
-          className="flex items-center gap-4 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-5 sm:p-6 mb-6 no-underline hover:border-indigo-500/40 transition-all duration-200 group"
-        >
-          <div className="w-12 h-12 rounded-xl bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
-            <User className="w-6 h-6 text-indigo-400" />
-          </div>
-          <div>
-            <p className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-indigo-400">
-              Manage
-            </p>
-            <h3 className="text-white font-black uppercase text-base sm:text-lg tracking-wide group-hover:text-indigo-300 transition-colors">
-              About & Profile
-            </h3>
-          </div>
+        <Link to="/admin/about" className="admin-profile-link group">
+          <span className="admin-profile-link__icon" aria-hidden="true">
+            <User size={21} />
+          </span>
+          <span className="admin-profile-link__copy">
+            <span>Profile settings</span>
+            <strong>About &amp; Profile</strong>
+          </span>
+          <ArrowUpRight className="admin-profile-link__arrow" size={18} aria-hidden="true" />
         </Link>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cards.map(({ label, icon: Icon, path, key, color }) => {
-            const theme = colorClasses[color] || colorClasses.indigo;
-            return (
-              <Link
-                key={path}
-                to={path}
-                className={`group bg-white/[0.02] border border-white/[0.06] ${theme.hover} rounded-2xl p-5 sm:p-6 no-underline transition-all duration-200 hover:bg-white/[0.04]`}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div
-                    className={`w-10 h-10 rounded-xl ${theme.bg} border ${theme.border} flex items-center justify-center flex-shrink-0`}
-                  >
-                    <Icon className={`w-5 h-5 ${theme.text}`} />
-                  </div>
-                  <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    {counts[key] ?? "—"}
-                  </span>
-                </div>
-                <p
-                  className={`text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 group-hover:${theme.text} transition-colors`}
-                >
-                  {label}
-                </p>
-              </Link>
-            );
-          })}
+        <div className="admin-dashboard__section-heading">
+          <h2>Content overview</h2>
+          <span>
+            {loading
+              ? "Loading from portfolio API"
+              : failedKeys.length > 0
+                ? "Some totals unavailable"
+                : "Current portfolio totals"}
+          </span>
+        </div>
+
+        {failedKeys.length > 0 && (
+          <div className="admin-dashboard__error" role="alert">
+            <ul>
+              {failedKeys.map((key) => (
+                <li key={key}>
+                  <strong>{errors[key].label}:</strong> {errors[key].message}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => {
+                setLoading(true);
+                setRequestedKeys(failedKeys);
+              }}
+            >
+              {loading ? "Retrying…" : "Retry failed requests"}
+            </button>
+          </div>
+        )}
+
+        <div className="admin-dashboard__grid" aria-busy={loading}>
+          {cards.map(({ label, icon: Icon, path, key }) => (
+            <Link key={path} to={path} className="admin-stat-card group">
+              <span className="admin-stat-card__icon" aria-hidden="true">
+                <Icon size={20} />
+              </span>
+              <span className="admin-stat-card__count">
+                {counts[key] ?? (errors[key] ? "Unavailable" : "—")}
+              </span>
+              <span className="admin-stat-card__label">{label}</span>
+              <ArrowUpRight className="admin-stat-card__arrow" size={16} aria-hidden="true" />
+            </Link>
+          ))}
         </div>
       </div>
     </AdminLayout>

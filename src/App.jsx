@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { MotionConfig } from "framer-motion";
 
 // Public pages
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
+import ProjectDetail from "./pages/ProjectDetail";
 import Skills from "./pages/Skills";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
@@ -28,15 +29,16 @@ import ManageCertifications from "./admin/ManageCertifications";
 import ManageEducation from "./admin/ManageEducation";
 import ManageExperience from "./admin/ManageExperience";
 import ManageMessages from "./admin/ManageMessages";
+import NotFound from "./pages/NotFound";
+import PageMetadata from "./components/PageMetadata";
 
 function App() {
   return (
     <BrowserRouter>
+      <MotionConfig reducedMotion="user">
       {/* Resets scroll position to top on every route change */}
       <ScrollToTop />
-
-      {/* Renders toast notifications */}
-      <Toaster position="top-center" />
+      <PageMetadata />
 
       <Routes>
         {/* Public */}
@@ -57,6 +59,17 @@ function App() {
             <>
               <Navbar />
               <Projects />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/projects/:projectId"
+          element={
+            <>
+              <Navbar />
+              <ProjectDetail />
               <Footer />
             </>
           }
@@ -118,11 +131,11 @@ function App() {
         />
 
         {/* Meta-required pages */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/privacy-policy" element={<><Navbar /><PrivacyPolicy /><Footer /></>} />
 
-        <Route path="/data-deletion" element={<DataDeletion />} />
+        <Route path="/data-deletion" element={<><Navbar /><DataDeletion /><Footer /></>} />
 
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/terms-of-service" element={<><Navbar /><TermsOfService /><Footer /></>} />
 
         {/* Admin routes */}
         <Route path="/admin" element={<Login />} />
@@ -138,7 +151,10 @@ function App() {
         <Route path="/admin/education" element={<ManageEducation />} />
         <Route path="/admin/experience" element={<ManageExperience />} />
         <Route path="/admin/messages" element={<ManageMessages />} />
+
+        <Route path="*" element={<><Navbar /><NotFound /><Footer /></>} />
       </Routes>
+      </MotionConfig>
     </BrowserRouter>
   );
 }

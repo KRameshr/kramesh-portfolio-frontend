@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const BlogNotFound = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50/60 via-white to-slate-50/90 flex flex-col items-center justify-center gap-4 px-4">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 px-4">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -22,7 +22,7 @@ const BlogNotFound = () => {
         <motion.div whileHover={{ x: -2 }}>
           <Link
             to="/blog"
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] text-blue-600 hover:text-orange-500 no-underline transition-colors duration-300"
+            className="flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900 no-underline transition-colors"
           >
             <ArrowLeft className="w-3 h-3" />
             Back to Blogs

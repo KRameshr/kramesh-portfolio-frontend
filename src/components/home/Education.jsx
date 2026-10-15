@@ -5,23 +5,26 @@ import API from "../../api/axios";
 
 const Education = () => {
   const [educations, setEducations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     API.get("/education")
       .then((res) => setEducations(res.data))
-      .catch(console.error);
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <FadeInSection>
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-transparent text-gray-900">
+      <section className="portfolio-section portfolio-section-dark px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="flex flex-wrap items-center gap-3 mb-10">
             <div className="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-600">
               <GraduationCap className="w-4 h-4" />
             </div>
-            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-blue-600">
+            <h2 className="portfolio-section-heading text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Education
             </h2>
             <div className="flex-1 h-[1px] bg-gray-200" />
@@ -29,11 +32,15 @@ const Education = () => {
 
           {/* Education List Container */}
           <div className="flex flex-col gap-6">
-            {educations.length > 0 ? (
+            {loading ? (
+              <p role="status" className="text-sm text-gray-500">Loading education…</p>
+            ) : loadError ? (
+              <p role="alert" className="text-sm text-red-800">Education could not be loaded.</p>
+            ) : educations.length > 0 ? (
               educations.map((edu) => (
                 <div
                   key={edu._id}
-                  className="border border-gray-200/90 hover:border-blue-300 rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-gray-200/50 transition-all duration-300 bg-slate-100/70"
+                  className="portfolio-card p-5 sm:p-7"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
                     <div className="flex-1">
